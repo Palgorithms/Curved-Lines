@@ -1,0 +1,680 @@
+///////////////////////////////  Chained Bezier
+
+let isShort = false;
+let half = false;
+
+let canvasHeight = document.body.clientHeight;
+let canvasWidth = isShort ? half ? canvasHeight*9/8 : canvasHeight*9/16 : document.body.clientWidth;
+let Debug = true;
+let Drawing = false;
+let P1 = false;
+let P2 = false;
+let P3 = false;
+let P4 = false;
+let i = -1;
+let CLs = [];
+let lastRandX = GetRandX();
+let lastRandY = GetRandY();
+
+function setup() {
+  createCanvas(canvasWidth,canvasHeight);
+  rectMode(CENTER);
+  for(let j = 0 ; j < 10; j++){
+    let newLRX = GetRandX();
+    let newLRY = GetRandY();
+    CLs.push({
+      x1: lastRandX,y1: lastRandY,
+      x2:GetRandX(),y2:GetRandY(),
+      x3:GetRandX(),y3:GetRandY(),
+      x4: newLRX,y4: newLRY,
+    })
+    lastRandX = newLRX;
+    lastRandY = newLRY;
+  }
+}
+
+function draw() {
+  background(0);
+  noFill();
+  stroke(255,0,0)
+  strokeWeight(20)
+  CLs.forEach((CL)=>{
+    bezier(CL.x1,CL.y1,
+           CL.x2,CL.y2,
+           CL.x3,CL.y3,
+           CL.x4,CL.y4)
+  })
+  if(P1){
+    CLs[i].x1 = mouseX;
+    CLs[i].y1 = mouseY;
+  }       
+  if(P2){
+    CLs[i].x2 = mouseX;
+    CLs[i].y2 = mouseY;
+  }       
+  if(P3){
+    CLs[i].x3 = mouseX;
+    CLs[i].y3 = mouseY;
+  }       
+  if(P4){
+    CLs[i].x4 = mouseX;
+    CLs[i].y4 = mouseY;
+  }
+  if(Drawing){
+    CLs[i].x4 = mouseX;
+    CLs[i].y4 = mouseY;
+  }
+  if(Debug){
+    CLs.forEach((CL)=>{
+      stroke(0)
+      strokeWeight(1)
+      fill(255,0,255)
+      circle(CL.x1,CL.y1,25)
+      fill(0,255,0)
+      circle(CL.x2,CL.y2,25)
+      fill(255,255,0)
+      circle(CL.x3,CL.y3,25)
+      fill(0,255,255)
+      circle(CL.x4,CL.y4,25)
+    })
+  }
+}
+
+function keyPressed(e){
+  if(key === 'd'){
+    Debug = !Debug;
+  }
+  if(e.key === 'q'){
+    P1 = true;
+  }
+  if(e.key === 'w'){
+    P2 = true;
+  }
+  if(e.key === 'e'){
+    P3 = true;
+  }
+  if(e.key === 'r'){
+    P4 = true;
+  }
+}
+
+function keyReleased(e){
+  if(e.key === 'q'){
+    P1 = false;
+  }
+  if(e.key === 'w'){
+    P2 = false;
+  }
+  if(e.key === 'e'){
+    P3 = false;
+  }
+  if(e.key === 'r'){
+    P4 = false;
+  }
+}
+
+
+function mousePressed(e){
+  if(e.button == 0){
+    CLs.push({
+      x1:mouseX,y1:mouseY,
+      x2:mouseX,y2:mouseY,
+      x3:mouseX,y3:mouseY,
+      x4:mouseX,y4:mouseY,
+    })
+    i++;
+    Drawing = true;
+  }
+}
+
+function mouseReleased(e){
+  if(e.button == 0){
+    Drawing = false;
+  }
+}
+
+function GetRandX(){
+  return Math.random() * canvasWidth;
+}
+
+function GetRandY(){
+  return Math.random() * canvasHeight;
+}
+
+//////////////////////////////////  Fixed points Bezier
+
+
+let isShort = false;
+let half = false;
+
+let canvasHeight = document.body.clientHeight;
+let canvasWidth = isShort ? half ? canvasHeight*9/8 : canvasHeight*9/16 : document.body.clientWidth;
+let Debug = true;
+let Drawing = false;
+let P1 = false;
+let P2 = false;
+let P3 = false;
+let P4 = false;
+let i = -1;
+let CLs = [];
+let FixedP2 = {x: GetRandX(),y: GetRandY()};
+let FixedP3 = {x: GetRandX(),y: GetRandY()};
+
+function setup() {
+  createCanvas(canvasWidth,canvasHeight);
+  rectMode(CENTER);
+  for(let j = 0 ; j < 10; j++){
+    let newLRX = GetRandX();
+    let newLRY = GetRandY();
+    CLs.push({
+      x1: 50,y1: GetRandY(),
+      x2:FixedP2.x,y2:FixedP2.y,
+      x3:FixedP3.x,y3:FixedP3.y,
+      x4: canvasHeight-50,y4: GetRandY(),
+    })
+    lastRandX = newLRX;
+    lastRandY = newLRY;
+  }
+}
+
+function draw() {
+  background(0);
+  noFill();
+  stroke(255,0,0)
+  strokeWeight(20)
+  CLs.forEach((CL)=>{
+    bezier(CL.x1,CL.y1,
+           CL.x2,CL.y2,
+           CL.x3,CL.y3,
+           CL.x4,CL.y4)
+  })
+  if(P1){
+    CLs[i].x1 = mouseX;
+    CLs[i].y1 = mouseY;
+  }       
+  if(P2){
+    CLs[i].x2 = mouseX;
+    CLs[i].y2 = mouseY;
+  }       
+  if(P3){
+    CLs[i].x3 = mouseX;
+    CLs[i].y3 = mouseY;
+  }       
+  if(P4){
+    CLs[i].x4 = mouseX;
+    CLs[i].y4 = mouseY;
+  }
+  if(Drawing){
+    CLs[i].x4 = mouseX;
+    CLs[i].y4 = mouseY;
+  }
+  if(Debug){
+    CLs.forEach((CL)=>{
+      stroke(0)
+      strokeWeight(1)
+      fill(255,0,255)
+      circle(CL.x1,CL.y1,25)
+      fill(0,255,0)
+      circle(CL.x2,CL.y2,25)
+      fill(255,255,0)
+      circle(CL.x3,CL.y3,25)
+      fill(0,255,255)
+      circle(CL.x4,CL.y4,25)
+    })
+  }
+}
+
+function keyPressed(e){
+  if(key === 'd'){
+    Debug = !Debug;
+  }
+  if(e.key === 'q'){
+    P1 = true;
+  }
+  if(e.key === 'w'){
+    P2 = true;
+  }
+  if(e.key === 'e'){
+    P3 = true;
+  }
+  if(e.key === 'r'){
+    P4 = true;
+  }
+}
+
+function keyReleased(e){
+  if(e.key === 'q'){
+    P1 = false;
+  }
+  if(e.key === 'w'){
+    P2 = false;
+  }
+  if(e.key === 'e'){
+    P3 = false;
+  }
+  if(e.key === 'r'){
+    P4 = false;
+  }
+}
+
+
+function mousePressed(e){
+  if(e.button == 0){
+    CLs.push({
+      x1:mouseX,y1:mouseY,
+      x2:mouseX,y2:mouseY,
+      x3:mouseX,y3:mouseY,
+      x4:mouseX,y4:mouseY,
+    })
+    i++;
+    Drawing = true;
+  }
+}
+
+function mouseReleased(e){
+  if(e.button == 0){
+    Drawing = false;
+  }
+}
+
+function GetRandX(){
+  return Math.random() * canvasWidth;
+}
+
+function GetRandY(){
+  return Math.random() * canvasHeight;
+}
+
+////////////////////////////////////// Fixed Start/End Points Bezier
+
+
+let isShort = false;
+let half = false;
+
+let canvasHeight = document.body.clientHeight;
+let canvasWidth = isShort ? half ? canvasHeight*9/8 : canvasHeight*9/16 : document.body.clientWidth;
+let Debug = true;
+let Drawing = false;
+let P1 = false;
+let P2 = false;
+let P3 = false;
+let P4 = false;
+let i = -1;
+let CLs = [];
+let FixedP2 = {x: GetRandX(),y: GetRandY()};
+let FixedP3 = {x: GetRandX(),y: GetRandY()};
+
+function setup() {
+  createCanvas(canvasWidth,canvasHeight);
+  rectMode(CENTER);
+  for(let j = 0 ; j < 10; j++){
+    let newLRX = GetRandX();
+    let newLRY = GetRandY();
+    CLs.push({
+      x1: 50,y1: canvasHeight/2,
+      x2:GetRandX(),y2:GetRandY(),
+      x3:GetRandX(),y3:GetRandY(),
+      x4: canvasHeight-50,y4: canvasWidth/2,
+    })
+    lastRandX = newLRX;
+    lastRandY = newLRY;
+  }
+}
+
+function draw() {
+  background(0);
+  noFill();
+  stroke(255,0,0)
+  strokeWeight(20)
+  CLs.forEach((CL)=>{
+    bezier(CL.x1,CL.y1,
+           CL.x2,CL.y2,
+           CL.x3,CL.y3,
+           CL.x4,CL.y4)
+  })
+  if(P1){
+    CLs[i].x1 = mouseX;
+    CLs[i].y1 = mouseY;
+  }       
+  if(P2){
+    CLs[i].x2 = mouseX;
+    CLs[i].y2 = mouseY;
+  }       
+  if(P3){
+    CLs[i].x3 = mouseX;
+    CLs[i].y3 = mouseY;
+  }       
+  if(P4){
+    CLs[i].x4 = mouseX;
+    CLs[i].y4 = mouseY;
+  }
+  if(Drawing){
+    CLs[i].x4 = mouseX;
+    CLs[i].y4 = mouseY;
+  }
+  if(Debug){
+    CLs.forEach((CL)=>{
+      stroke(0)
+      strokeWeight(1)
+      fill(255,0,255)
+      circle(CL.x1,CL.y1,25)
+      fill(0,255,0)
+      circle(CL.x2,CL.y2,25)
+      fill(255,255,0)
+      circle(CL.x3,CL.y3,25)
+      fill(0,255,255)
+      circle(CL.x4,CL.y4,25)
+    })
+  }
+}
+
+function keyPressed(e){
+  if(key === 'd'){
+    Debug = !Debug;
+  }
+  if(e.key === 'q'){
+    P1 = true;
+  }
+  if(e.key === 'w'){
+    P2 = true;
+  }
+  if(e.key === 'e'){
+    P3 = true;
+  }
+  if(e.key === 'r'){
+    P4 = true;
+  }
+}
+
+function keyReleased(e){
+  if(e.key === 'q'){
+    P1 = false;
+  }
+  if(e.key === 'w'){
+    P2 = false;
+  }
+  if(e.key === 'e'){
+    P3 = false;
+  }
+  if(e.key === 'r'){
+    P4 = false;
+  }
+}
+
+
+function mousePressed(e){
+  if(e.button == 0){
+    CLs.push({
+      x1:mouseX,y1:mouseY,
+      x2:mouseX,y2:mouseY,
+      x3:mouseX,y3:mouseY,
+      x4:mouseX,y4:mouseY,
+    })
+    i++;
+    Drawing = true;
+  }
+}
+
+function mouseReleased(e){
+  if(e.button == 0){
+    Drawing = false;
+  }
+}
+
+function GetRandX(){
+  return Math.random() * canvasWidth;
+}
+
+function GetRandY(){
+  return Math.random() * canvasHeight;
+}
+
+//////////////////////////////////////////// Chained Curves
+
+let isShort = false;
+let half = false;
+
+let canvasHeight = document.body.clientHeight;
+let canvasWidth = isShort ? half ? canvasHeight*9/8 : canvasHeight*9/16 : document.body.clientWidth;
+let Debug = true;
+let Drawing = false;
+let P1 = false;
+let P2 = false;
+let P3 = false;
+let P4 = false;
+let i = -1;
+let CLs = [];
+let lastRandX = GetRandX();
+let lastRandY = GetRandY();
+
+function setup() {
+  createCanvas(canvasWidth,canvasHeight);
+  rectMode(CENTER);
+  for(let j = 0 ; j < 10; j++){
+    let newLRX = GetRandX();
+    let newLRY = GetRandY();
+    CLs.push({
+      x1: lastRandX,y1: lastRandY,
+      x2: newLRX,   y2: newLRY,
+    })
+    i++
+    lastRandX = newLRX;
+    lastRandY = newLRY;
+  }
+}
+
+function draw() {
+  background(0);
+  noFill();
+  stroke(255,0,0)
+  strokeWeight(20)
+  CLs.forEach((CL,ind)=>{
+    curve(ind != 0 ? CLs[ind-1].x1 : CL.x1,
+          ind != 0 ? CLs[ind-1].y1 : CL.y1,
+          CL.x1,CL.y1,
+          CL.x2,CL.y2,
+          ind != CLs.length-1 ? CLs[ind+1].x2 : CL.x2,
+          ind != CLs.length-1 ? CLs[ind+1].y2 : CL.y2,)
+  })
+  if(P1){
+    CLs[i].x1 = mouseX;
+    CLs[i].y1 = mouseY;
+  }       
+  if(P2){
+    CLs[i].x2 = mouseX;
+    CLs[i].y2 = mouseY;
+  }       
+  if(P3){
+    CLs[i].x3 = mouseX;
+    CLs[i].y3 = mouseY;
+  }       
+  if(P4){
+    CLs[i].x4 = mouseX;
+    CLs[i].y4 = mouseY;
+  }
+  if(Drawing){
+    CLs[i].x4 = mouseX;
+    CLs[i].y4 = mouseY;
+  }
+  if(Debug){
+    CLs.forEach((CL)=>{
+      stroke(0)
+      strokeWeight(1)
+      fill(255,0,255)
+      circle(CL.x1,CL.y1,25)
+      fill(0,255,0)
+      circle(CL.x2,CL.y2,25)
+      fill(255,255,0)
+      circle(CL.x3,CL.y3,25)
+      fill(0,255,255)
+      circle(CL.x4,CL.y4,25)
+    })
+  }
+}
+
+function keyPressed(e){
+  if(key === 'd'){
+    Debug = !Debug;
+  }
+  if(e.key === 'q'){
+    P1 = true;
+  }
+  if(e.key === 'w'){
+    P2 = true;
+  }
+  if(e.key === 'e'){
+    P3 = true;
+  }
+  if(e.key === 'r'){
+    P4 = true;
+  }
+}
+
+function keyReleased(e){
+  if(e.key === 'q'){
+    P1 = false;
+  }
+  if(e.key === 'w'){
+    P2 = false;
+  }
+  if(e.key === 'e'){
+    P3 = false;
+  }
+  if(e.key === 'r'){
+    P4 = false;
+  }
+}
+
+
+function mousePressed(e){
+  if(e.button == 0){
+    CLs.push({
+      x1:mouseX,y1:mouseY,
+      x2:mouseX,y2:mouseY,
+      x3:mouseX,y3:mouseY,
+      x4:mouseX,y4:mouseY,
+    })
+    i++;
+    Drawing = true;
+  }
+}
+
+function mouseReleased(e){
+  if(e.button == 0){
+    Drawing = false;
+  }
+}
+
+function GetRandX(){
+  return Math.random() * canvasWidth;
+}
+
+function GetRandY(){
+  return Math.random() * canvasHeight;
+}
+
+///////////////////////////////////////////// Chained Curves Manual
+
+let isShort = false;
+let half = false;
+
+let canvasHeight = document.body.clientHeight;
+let canvasWidth = isShort ? half ? canvasHeight*9/8 : canvasHeight*9/16 : document.body.clientWidth;
+let Debug = true;
+let Drawing = false;
+let i = -1;
+let points = [];
+
+function setup() {
+  createCanvas(canvasWidth,canvasHeight);
+  rectMode(CENTER);
+}
+
+function draw() {
+  background(0);
+  noFill();
+  stroke(255,0,0)
+  strokeWeight(20)
+  
+  if(points.length){
+    beginShape()
+    curveVertex(points[0].x, points[0].y)
+    points.forEach(p => {
+      curveVertex(p.x,p.y)
+    });
+    curveVertex(points[points.length-1].x,
+                points[points.length-1].y)
+    endShape()
+  }
+  
+  if(Drawing){
+    points[i].x = mouseX;
+    points[i].y = mouseY;
+  }
+  if(Debug){
+    points.forEach((p)=>{
+      stroke(0)
+      strokeWeight(1)
+      fill(255,0,255)
+      circle(p.x,p.y,25)
+    })
+  }
+}
+
+function keyPressed(e){
+  if(key === 'd'){
+    Debug = !Debug;
+  }
+  if(e.key === 'q'){
+    P1 = true;
+  }
+  if(e.key === 'w'){
+    P2 = true;
+  }
+  if(e.key === 'e'){
+    P3 = true;
+  }
+  if(e.key === 'r'){
+    P4 = true;
+  }
+}
+
+function keyReleased(e){
+  if(e.key === 'q'){
+    P1 = false;
+  }
+  if(e.key === 'w'){
+    P2 = false;
+  }
+  if(e.key === 'e'){
+    P3 = false;
+  }
+  if(e.key === 'r'){
+    P4 = false;
+  }
+}
+
+
+function mousePressed(e){
+  if(e.button == 0){
+    points.push({
+      x:mouseX,y:mouseY,
+    })
+    i++;
+    Drawing = true;
+  }
+}
+
+function mouseReleased(e){
+  if(e.button == 0){
+    Drawing = false;
+  }
+}
+
+function GetRandX(){
+  return Math.random() * canvasWidth;
+}
+
+function GetRandY(){
+  return Math.random() * canvasHeight;
+}
